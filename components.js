@@ -9,7 +9,6 @@ module.exports = function (data) {
 				<tr key={this.props.id}>
 					<td>{this.props.title}</td>
 					<td>{this.props.authorName}</td>
-					<td>{this.props.authorGender}</td>
 					<td>{this.props.genre}</td>
 					<td>{this.props.publishDate}</td>
 				</tr>
@@ -69,18 +68,69 @@ module.exports = function (data) {
 
 	var Bookshelf = React.createClass({
 		getInitialState: function () {
-			return {sample: []};
+			return {mode: 'title', workset: [], view: [], page: 0};
 		},
 		componentDidMount: function () {
-			this.setState({sample: this.props.data.slice(0,20)});
+			var workset = this.props.data.getSortedByTitle();
+			var page = this.state.page;
+			this.setState({
+				workset: workset,
+				view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
+			});
 		},
 		select: function (index) {
-			this.setState({sample: this.props.data.slice(index * 20, Math.min((index+1) * 20, this.props.data.length))});
+			var page = typeof(index) !== 'undefined' ? index : this.state.page;
+			this.setState({
+				view: this.state.workset.slice(page * 20, Math.min((page+1) * 20, this.state.workset.length)),
+				page: page
+			});
+		},
+		reorderByTitle: function () {
+			var page = this.state.page;
+			if (this.state.mode !== 'title') {
+				var workset = this.props.data.getSortedByTitle();
+				this.setState({
+					mode: 'title',
+					workset: workset,
+					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
+				});
+			} else {
+				var workset = this.state.workset.reverse();
+				this.setState({
+					workset: workset,
+					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
+				});
+			}
+		},
+		reorderByAuthor: function () {
+			var page = this.state.page;
+			if (this.state.mode !== 'author') {
+				var workset = this.props.data.getSortedByAuthor();
+				this.setState({
+					mode: 'author',
+					workset: workset,
+					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
+				});
+			} else {
+				var workset = this.state.workset.reverse();
+				this.setState({
+					workset: workset,
+					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
+				});
+			}
+		},
+		filterByGenre: function () {
+			var page = this.state.page;
+			var workset = this.props.data.filter('comics');
+			this.setState({
+				workset: workset,
+				view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
+			});
 		},
 		render: function () {
-			var bookItems = this.state.sample.map( function(book) {
+			var bookItems = this.state.view.map( function(book) {
 				return (
-					<Book key={book.oid} id={book.oid} title={book.name} authorName={book.author.name} authorGender={book.author.gender} genre={book.genre} publishDate={book.publishDate.toISOString().slice(0, 10)} />
+					<Book key={book.oid} id={book.oid} title={book.name} authorName={book.author.name} genre={book.genre} publishDate={book.publishDate.toISOString().slice(0, 10)} />
 				);
 			});
 			return (
@@ -88,16 +138,15 @@ module.exports = function (data) {
 					<table>
 						<thead>
 							<tr>
-								<th key="title">Title</th>
-								<th key="authorName">Author name</th>
-								<th key="authorGender">Author gender</th>
-								<th key="genre">Genre</th>
+								<th key="title" onClick={this.reorderByTitle}>Title</th>
+								<th key="authorName" onClick={this.reorderByAuthor}>Author name</th>
+								<th key="genre" onClick={this.filterByGenre}>Genre</th>
 								<th key="publishDate">Publish Date</th>
 							</tr>
 						</thead>
 						<tbody>{bookItems}</tbody>
 					</table>
-					<Pager data={this.props.data} updater={this.select} />
+					<Pager data={this.state.workset} updater={this.select} />
 				</div>
 			);
 		}
