@@ -166,7 +166,7 @@ function createBooks () {
 	var start = (new Date(1984, 5, 24)).getTime();
 	var end = (new Date()).getTime();
 
-	for (var i = 0; i < 100; i++) {
+	for (var i = 0; i < 1000000; i++) {
 		var book =  new bookshelf.Book({
 			'name' : randomName(),
 			'author' : authorIndex.getRandom(),

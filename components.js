@@ -2,6 +2,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Select = require('react-select');
+var FontAwesome = require('react-fontawesome');
 
 module.exports = function (data) {
 	var Book = React.createClass({
@@ -24,33 +25,33 @@ module.exports = function (data) {
 		renderFirst: function () {
 			var firstIndex = 0;
 			if (this.state.presentIndex === firstIndex) {
-				return (<a className="pager-disabled">&#x23ee;</a>);
+				return (<a className="pager-disabled"><FontAwesome name='angle-double-left' /></a>);
 			} else {
-				return (<a onClick={this.newPage.bind(this, firstIndex)}>&#x23ee;</a>);
+				return (<a onClick={this.newPage.bind(this, firstIndex)}><FontAwesome name='angle-double-left' /></a>);
 			}
 		},
 		renderPrev: function () {
 			var firstIndex = 0;
 			if (this.state.presentIndex === firstIndex) {
-				return (<a className="pager-disabled">&#x25c0;</a>);
+				return (<a className="pager-disabled"><FontAwesome name='angle-left' className='left-tweak' /></a>);
 			} else {
-				return (<a onClick={this.newPage.bind(this, this.state.presentIndex - 1)}>&#x25c0;</a>);
+				return (<a onClick={this.newPage.bind(this, this.state.presentIndex - 1)}><FontAwesome name='angle-left' className='left-tweak' /></a>);
 			}
 		},
 		renderNext: function () {
 			var lastIndex = Math.ceil(this.props.data.length / 20.0) - 1;
 			if (this.state.presentIndex === lastIndex) {
-				return (<a className="pager-disabled">&#x25b6;</a>);
+				return (<a className="pager-disabled"><FontAwesome name='angle-right' className='right-tweak' /></a>);
 			} else {
-				return (<a onClick={this.newPage.bind(this, this.state.presentIndex + 1)}>&#x25b6;</a>);
+				return (<a onClick={this.newPage.bind(this, this.state.presentIndex + 1)}><FontAwesome name='angle-right' className='right-tweak' /></a>);
 			}
 		},
 		renderLast: function () {
 			var lastIndex = Math.ceil(this.props.data.length / 20.0) - 1;
 			if (this.state.presentIndex === lastIndex) {
-				return (<a className="pager-disabled">&#x23ed;</a>);
+				return (<a className="pager-disabled"><FontAwesome name='angle-double-right' /></a>);
 			} else {
-				return (<a onClick={this.newPage.bind(this, lastIndex)}>&#x23ed;</a>);
+				return (<a onClick={this.newPage.bind(this, lastIndex)}><FontAwesome name='angle-double-right' /></a>);
 			}
 		},
 		newPage: function (index) {
@@ -61,7 +62,7 @@ module.exports = function (data) {
 			var lastIndex = Math.ceil(this.props.data.length / 20.0);
 			return (
 				<div className="pager">
-					{this.renderFirst()} {this.renderPrev()} <span>{this.state.presentIndex + 1} of {lastIndex}</span> {this.renderNext()} {this.renderLast()}
+					{this.renderFirst()} {this.renderPrev()} <span className='page-counter'>{this.state.presentIndex + 1} of {lastIndex}</span> {this.renderNext()} {this.renderLast()}
 				</div>
 			);
 		}
@@ -69,10 +70,10 @@ module.exports = function (data) {
 
 	var Bookshelf = React.createClass({
 		getInitialState: function () {
-			return {mode: 'title', workset: [], view: [], page: 0};
+			return {mode: 'title', order: 'asc', workset: [], view: [], page: 0};
 		},
 		componentDidMount: function () {
-			var workset = this.props.data.getSortedByTitle();
+			var workset = this.props.data.getSortedByTitle().slice();
 			var page = this.state.page;
 			this.setState({
 				workset: workset,
@@ -89,15 +90,18 @@ module.exports = function (data) {
 		reorderByTitle: function () {
 			var page = this.state.page;
 			if (this.state.mode !== 'title') {
-				var workset = this.props.data.getSortedByTitle();
+				var workset = this.props.data.getSortedByTitle().slice();
 				this.setState({
 					mode: 'title',
+					order: 'asc',
 					workset: workset,
 					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
 				});
 			} else {
 				var workset = this.state.workset.reverse();
+				var order = this.state.order === 'asc' ? 'des' : 'asc';
 				this.setState({
+					order: order,
 					workset: workset,
 					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
 				});
@@ -106,15 +110,18 @@ module.exports = function (data) {
 		reorderByAuthor: function () {
 			var page = this.state.page;
 			if (this.state.mode !== 'author') {
-				var workset = this.props.data.getSortedByAuthor();
+				var workset = this.props.data.getSortedByAuthor().slice();
 				this.setState({
 					mode: 'author',
+					order: 'asc',
 					workset: workset,
 					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
 				});
 			} else {
 				var workset = this.state.workset.reverse();
+				var order = this.state.order === 'asc' ? 'des' : 'asc';
 				this.setState({
+					order: order,
 					workset: workset,
 					view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
 				});
@@ -139,6 +146,7 @@ module.exports = function (data) {
 			}
 			this.setState({
 				mode: 'title',
+				order: 'asc',
 				workset: workset,
 				view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
 			});
@@ -163,8 +171,8 @@ module.exports = function (data) {
 					<table>
 						<thead>
 							<tr>
-								<th key="title" className="sortable" onClick={this.reorderByTitle}>Title</th>
-								<th key="authorName" className="sortable" onClick={this.reorderByAuthor}>Author name</th>
+								<th key="title" className="sortable" onClick={this.reorderByTitle}>Title <FontAwesome name={(this.state.mode === 'title' && this.state.order === 'des') ? 'caret-up' : 'caret-down'} /></th>
+								<th key="authorName" className="sortable" onClick={this.reorderByAuthor}>Author name <FontAwesome name={(this.state.mode === 'author' && this.state.order === 'des') ? 'caret-up' : 'caret-down'} /></th>
 								<th key="genre" className="filter" >
 									<Select
 										value=""

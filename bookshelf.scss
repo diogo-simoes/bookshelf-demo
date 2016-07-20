@@ -52,6 +52,12 @@ h2 {
 					}
 				}
 			}
+			th:first-child {
+				border-top-left-radius: 8px;
+			}
+			th:last-child {
+				border-top-right-radius: 8px;
+			}
 		}
 
 		tbody {
@@ -69,9 +75,51 @@ h2 {
 			}
 		}
 	}
-}
 
-.bookshelf table {
-	width: 100%;
-}
+	.pager {
+		padding: 10px;
+		text-align: center;
+		cursor: default;
+		background-color: #41be8e;
+		color: #f0f0f0;
+		border-bottom-left-radius: 8px;
+		border-bottom-right-radius: 8px;
+		-webkit-user-select: none;  /* Chrome all / Safari all */
+		-moz-user-select: none;     /* Firefox all */
+		-ms-user-select: none;      /* IE 10+ */
+		user-select: none;
+		a {
+			cursor: pointer;
+			background-color: #eaeaea;
+			color: #41be8e;
+			border-radius: 10px;
+			font-size: 19px;
+			line-height: 20px;
+			display: inline-block;
+			width: 20px;
+			margin: 0 2px;
+			&:hover {
+				background-color: #ffffff;
+				color: darken(#41be8e, 5%);
+			}
+			&.pager-disabled {
+				color: #bfbfbf;
+				cursor: default;
+				&:hover {
+					background-color: #eaeaea;
+					color: #bfbfbf;
+				}
+			}
 
+			.left-tweak {
+				padding-right: 2px;
+			}
+			.right-tweak {
+				padding-left: 2px;
+			}
+		}
+		.page-counter {
+			margin: 0 8px;
+		}
+	}
+}
