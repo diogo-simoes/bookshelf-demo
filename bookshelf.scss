@@ -123,3 +123,39 @@ h2 {
 		}
 	}
 }
+
+.loader {
+	width: 200px;
+	height: 200px;
+	margin: 100px auto;
+	border-radius: 100px;
+	animation: pulse 6s infinite;
+	font-size: 27px;
+	line-height: 200px;
+	text-align: center;
+	color: #eaeaea;
+}
+
+@keyframes pulse {
+	0% {
+		background-color: #41be8e;
+	}
+	17% {
+		background-color: #a640bf;
+	}
+	34% {
+		background-color: #bf405d;
+	}
+	50% {
+		background-color: #40acbf;
+	}
+	67% {
+		background-color: #c90;
+	}
+	84% {
+		background-color: #bf6040;
+	}
+	100% {
+		background-color: #41be8e;
+	}
+}

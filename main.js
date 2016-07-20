@@ -1,14 +1,25 @@
 
 var bookshelf = require('./bookshelf-domain');
-var loadComponents = require('./components');
+var react = require('./components');
 
 var authorIndex = new AuthorIndex();
 var bookIndex = new BookIndex();
 
+var worker;
+
 function init () {
+	react.startLoader();
 	createAuthors();
 	createBooks();
-	loadComponents(bookIndex);
+}
+
+function dataLoaded () {
+	//Perform a cache warmup.
+	bookIndex.getSortedByTitle();
+	bookIndex.getSortedByAuthor();
+
+	react.stopLoader();
+	react.loadBooks(bookIndex);
 }
 
 function createAuthors () {
@@ -148,7 +159,6 @@ BookIndex.prototype.filter = function (filter) {
 	return result;
 }
 
-
 function createBooks () {
 	function randomInRange(min, maxExcl) {
 		return Math.floor(Math.random() * (maxExcl - min)) + min;
@@ -166,15 +176,27 @@ function createBooks () {
 	var start = (new Date(1984, 5, 24)).getTime();
 	var end = (new Date()).getTime();
 
-	for (var i = 0; i < 1000000; i++) {
-		var book =  new bookshelf.Book({
-			'name' : randomName(),
-			'author' : authorIndex.getRandom(),
-			'genre' : genres[randomInRange(0, genres.length)],
-			'publishDate' : new Date(randomInRange(end, start))
-		});
-		bookIndex.add(book);
+	var count = 0;
+	var creator = function (testStop) {
+		for (;count < 1000000; count++) {
+			var book =  new bookshelf.Book({
+				'name' : randomName(),
+				'author' : authorIndex.getRandom(),
+				'genre' : genres[randomInRange(0, genres.length)],
+				'publishDate' : new Date(randomInRange(end, start))
+			});
+			bookIndex.add(book);
+			if (testStop && ((count + 1) % 1000 === 0)) {
+				count++;
+				setTimeout(creator.bind(this, false), 5);
+				return;
+			} else {
+				testStop = true;
+			}
+		}
+		dataLoaded();
 	}
+	creator(true);
 }
 
 init();

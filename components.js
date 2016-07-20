@@ -4,7 +4,8 @@ var ReactDOM = require('react-dom');
 var Select = require('react-select');
 var FontAwesome = require('react-fontawesome');
 
-module.exports = function (data) {
+var api = {};
+api.loadBooks = function (data) {
 	var Book = React.createClass({
 		render: function () {
 			return (
@@ -194,5 +195,19 @@ module.exports = function (data) {
 		<Bookshelf data={data} />,
 		document.getElementById('content')
 	);
-
 }
+
+api.startLoader = function () {
+	ReactDOM.render(
+		<div className="loader">Printing</div>,
+		document.getElementById('loading-animation')
+	);
+}
+
+api.stopLoader = function () {
+	ReactDOM.unmountComponentAtNode(
+		document.getElementById('loading-animation')
+	);
+}
+
+module.exports = api;
