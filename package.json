@@ -5,8 +5,12 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build:sass && browserify -t [ babelify ] main.js -o app.js",
-    "build:sass": "node-sass bookshelf.scss bookshelf.css"
+    "build": "npm run build:clean && npm run build:setup && npm run build:sass && npm run build:browserify && npm run build:cleanup",
+    "build:clean": "rm -rf build",
+    "build:setup": "mkdir build && cp -r src/* build/",
+    "build:sass": "node-sass build/bookshelf.scss build/bookshelf.css",
+    "build:browserify": "browserify -t [ babelify ] build/main.js -o build/app.js",
+    "build:cleanup": "rm build/bookshelf-domain.js build/bookshelf.scss build/components.js build/main.js"
   },
   "author": "Diogo Simoes <hello@diogosimoes.com> (http://diogosimoes.com)",
   "repository" : {

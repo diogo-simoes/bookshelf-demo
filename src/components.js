@@ -173,7 +173,7 @@ api.loadBooks = function (data) {
 						<thead>
 							<tr>
 								<th key="title" className="sortable" onClick={this.reorderByTitle}>Title <FontAwesome name={(this.state.mode === 'title' && this.state.order === 'des') ? 'caret-up' : 'caret-down'} /></th>
-								<th key="authorName" className="sortable" onClick={this.reorderByAuthor}>Author name <FontAwesome name={(this.state.mode === 'author' && this.state.order === 'des') ? 'caret-up' : 'caret-down'} /></th>
+								<th key="authorName" className="sortable" onClick={this.reorderByAuthor}>Author <FontAwesome name={(this.state.mode === 'author' && this.state.order === 'des') ? 'caret-up' : 'caret-down'} /></th>
 								<th key="genre" className="filter" >
 									<Select
 										value=""
