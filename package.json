@@ -9,6 +9,10 @@
     "build:sass": "node-sass bookshelf.scss bookshelf.css"
   },
   "author": "Diogo Simoes <hello@diogosimoes.com> (http://diogosimoes.com)",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/diogo-simoes/bookshelf-demo.git"
+  },
   "license": "MIT",
   "dependencies": {
     "babel-preset-react": "^6.11.1",
