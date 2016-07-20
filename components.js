@@ -1,12 +1,13 @@
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Select = require('react-select');
 
 module.exports = function (data) {
 	var Book = React.createClass({
 		render: function () {
 			return (
-				<tr key={this.props.id}>
+				<tr key={this.props.id} className={this.props.className}>
 					<td>{this.props.title}</td>
 					<td>{this.props.authorName}</td>
 					<td>{this.props.genre}</td>
@@ -119,18 +120,42 @@ module.exports = function (data) {
 				});
 			}
 		},
-		filterByGenre: function () {
+		filterByGenre: function (option) {
 			var page = this.state.page;
-			var workset = this.props.data.filter('comics');
+			var workset;
+			if (option.label === 'Genre') {
+				workset = this.props.data.getSortedByTitle();
+			} else if (option.value === 'halloween-special') {
+				workset = this.props.data.filter(function (book) {
+					if (book.genre !== 'horror') {
+						return false;
+					}
+					return (book.publishDate.getDate() === 31 && book.publishDate.getMonth() === 9);
+				});
+			}else {
+				workset = this.props.data.filter(function (book) {
+					return (book.genre === option.value);
+				});
+			}
 			this.setState({
+				mode: 'title',
 				workset: workset,
 				view: workset.slice(page * 20, Math.min((page+1) * 20, workset.length))
 			});
 		},
 		render: function () {
-			var bookItems = this.state.view.map( function(book) {
+			var options = this.props.data.genres.map( function (genre) {
+				return {
+					value: genre,
+					label: genre
+				};
+			});
+			options.unshift({value: '', label: 'Genre'});
+			options.push({value:'halloween-special', label:'horror - \uD83C\uDF83 special'})
+			var bookItems = this.state.view.map( function (book, index, array) {
+				var className = (index%2 === 0) ? 'even' : 'odd';
 				return (
-					<Book key={book.oid} id={book.oid} title={book.name} authorName={book.author.name} genre={book.genre} publishDate={book.publishDate.toISOString().slice(0, 10)} />
+					<Book className={className} key={book.oid} id={book.oid} title={book.name} authorName={book.author.name} genre={book.genre} publishDate={book.publishDate.toISOString().slice(0, 10)} />
 				);
 			});
 			return (
@@ -138,9 +163,14 @@ module.exports = function (data) {
 					<table>
 						<thead>
 							<tr>
-								<th key="title" onClick={this.reorderByTitle}>Title</th>
-								<th key="authorName" onClick={this.reorderByAuthor}>Author name</th>
-								<th key="genre" onClick={this.filterByGenre}>Genre</th>
+								<th key="title" className="sortable" onClick={this.reorderByTitle}>Title</th>
+								<th key="authorName" className="sortable" onClick={this.reorderByAuthor}>Author name</th>
+								<th key="genre" className="filter" >
+									<Select
+										value=""
+										options={options}
+										onChange={this.filterByGenre} />
+								</th>
 								<th key="publishDate">Publish Date</th>
 							</tr>
 						</thead>

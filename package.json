@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify -t [ babelify ] main.js -o app.js"
+    "build": "npm run build:sass && browserify -t [ babelify ] main.js -o app.js",
+    "build:sass": "node-sass bookshelf.scss bookshelf.css"
   },
   "author": "Diogo Simoes <hello@diogosimoes.com> (http://diogosimoes.com)",
   "license": "MIT",
@@ -13,6 +14,10 @@
     "babel-preset-react": "^6.11.1",
     "babelify": "^7.3.0",
     "react": "^15.2.1",
-    "react-dom": "^15.2.1"
+    "react-dom": "^15.2.1",
+    "react-select": "^1.0.0-beta14"
+  },
+  "devDependencies": {
+    "node-sass": "^3.8.0"
   }
 }

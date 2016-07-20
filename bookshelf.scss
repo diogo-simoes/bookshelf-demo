@@ -1,0 +1,77 @@
+@import url(https://fonts.googleapis.com/css?family=Muli);
+
+* {
+	font-family: 'Muli', sans-serif;
+}
+
+h2 {
+	width: 1080px;
+	margin: 50px auto;
+}
+
+.bookshelf {
+	width: 1080px;
+	margin: 0 auto;
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+
+		thead {
+			th {
+				width: 25%;
+				font-size: 20px;
+				text-align: left;
+				color: #f0f0f0;
+				background-color: #41be8e;
+				padding: 10px 20px;
+				cursor: default;
+				&.sortable {
+					cursor: pointer;
+					&:hover {
+						background-color: darken(#41be8e, 5%);
+					}
+				}
+
+				&.filter {
+					.Select {
+						cursor: pointer;
+						.Select-value {
+							background-color: #41be8e;
+							color: #f0f0f0;
+							&:hover {
+								background-color: darken(#41be8e, 5%);
+							}
+						}
+						.Select-control .Select-value .Select-value-label, .has-value.is-pseudo-focused.Select--single > .Select-control .Select-value .Select-value-label {
+							color: #f0f0f0;
+						}
+						.Select-arrow {
+							border-top-color: #f0f0f0;
+						}
+					}
+				}
+			}
+		}
+
+		tbody {
+
+			tr.even {
+				background-color: lighten(#eaeaea, 5%);
+			}
+
+			tr.odd {
+				background-color: #eaeaea;
+			}
+
+			td {
+				padding: 10px 20px;
+			}
+		}
+	}
+}
+
+.bookshelf table {
+	width: 100%;
+}
+

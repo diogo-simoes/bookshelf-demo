@@ -103,6 +103,8 @@ function BookIndex () {
 		}
 		return 0;
 	};
+
+	this.genres = ['novel', 'scifi', 'crime novel', 'historic novel', 'essay', 'play', 'biography', 'comics', 'adventure', 'horror'];
 }
 
 BookIndex.prototype.add = function (book) {
@@ -136,10 +138,10 @@ BookIndex.prototype.getSortedByAuthor = function () {
 	return this.sortedByAuthor;
 }
 
-BookIndex.prototype.filter = function (genre) {
+BookIndex.prototype.filter = function (filter) {
 	var result = [];
 	this.sortedByTitle.forEach( function (el) {
-		if (el.genre === genre) {
+		if (filter(el)) {
 			result.push(el);
 		}
 	});
@@ -160,11 +162,11 @@ function createBooks () {
 		return name.join('');
 	}
 
-	var genres = ['novel', 'scifi', 'crime novel', 'historic novel', 'essay', 'play', 'biography', 'comics', 'adventure'];
+	var genres = bookIndex.genres;
 	var start = (new Date(1984, 5, 24)).getTime();
 	var end = (new Date()).getTime();
 
-	for (var i = 0; i < 1000000; i++) {
+	for (var i = 0; i < 100; i++) {
 		var book =  new bookshelf.Book({
 			'name' : randomName(),
 			'author' : authorIndex.getRandom(),

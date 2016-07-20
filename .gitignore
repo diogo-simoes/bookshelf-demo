@@ -1,2 +1,3 @@
 app.js
+*.css
 node_modules/
